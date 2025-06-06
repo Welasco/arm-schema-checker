@@ -1,0 +1,3 @@
+[submodule "azure-resource-manager-schemas"]
+	path = azure-resource-manager-schemas
+	url = https://github.com/Azure/azure-resource-manager-schemas

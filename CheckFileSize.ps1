@@ -1,0 +1,1 @@
+Get-ChildItem -File -Recurse | Select-Object FullName, @{Name="SizeKB";Expression={[math]::Round($_.Length / 1KB, 2)}} | sort SizeKB

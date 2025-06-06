@@ -1,0 +1,4 @@
+workingfolder/
+*.log
+.env
+__pycache__
