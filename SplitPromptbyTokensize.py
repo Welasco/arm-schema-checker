@@ -1,5 +1,6 @@
 import os
 import tiktoken
+from langchain_text_splitters import CharacterTextSplitter, RecursiveCharacterTextSplitter, TokenTextSplitter
 
 def num_tokens_from_string(prompt: str, encoding_name: str) -> int:
     encoding = tiktoken.get_encoding(encoding_name)
@@ -43,12 +44,64 @@ JSON Schema:
 [{{json_schema_content}}]
 """
 
+def print_prompt_info(prompt: str, chunk_size: int, encoding_name: str = "cl100k_base"):
+    print(f"CharacterTextSplitter:")
+    text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
+        encoding_name="cl100k_base", chunk_size=chunk_size, chunk_overlap=0
+    )
+    texts = text_splitter.split_text(prompt)
+    for text in texts:
+        print(f"Chunk: \n{text}")
+        print(f"Tokens: {num_tokens_from_string(text, encoding_name)}")
+        print("---")
+
+    print("")
+    print("#####################")
+    print(f"RecursiveCharacterTextSplitter:")
+    recursive_character_text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+      model_name="gpt-4",
+      chunk_size=chunk_size,
+      chunk_overlap=0,
+    )
+    text_recursive_splitter = recursive_character_text_splitter.split_text(prompt)
+    print(f"Number of chunks: {len(text_recursive_splitter)}")
+    for text in text_recursive_splitter:
+        print(f"Chunk: \n{text}")
+        print(f"Tokens: {num_tokens_from_string(text, encoding_name)}")
+        print("---")
+
+    print("")
+    print("#####################")
+    print(f"TokenTextSplitter:")
+    token_text_splitter = TokenTextSplitter(chunk_size=chunk_size, chunk_overlap=0)
+    texts_token_splitter = token_text_splitter.split_text(prompt)
+    for text in texts_token_splitter:
+        print(f"Chunk: \n{text}")
+        print(f"Tokens: {num_tokens_from_string(text, encoding_name)}")
+        print("---")
+
+print_prompt_info(system_prompt, chunk_size=16000)
+
 for file in os.listdir(folder_path):
     print(os.path.join(folder_path, file))
     content_user_prompt = user_prompt.replace("[{{json_schema_content}}]", read_file(os.path.join(folder_path, file)))
-    num_tokens_system = num_tokens_from_string(system_prompt, "o200k_base")
-    num_tokens_user = num_tokens_from_string(content_user_prompt, "o200k_base")
-    total_tokens = num_tokens_system + num_tokens_user
-    print(f"File: {file}, System Prompt Tokens: {num_tokens_system}, User Prompt Tokens: {num_tokens_user}, Total Tokens: {total_tokens}")
+    print_prompt_info(content_user_prompt, chunk_size=16000)
+
+
+
+# for file in os.listdir(folder_path):
+#     print(os.path.join(folder_path, file))
+#     content_user_prompt = user_prompt.replace("[{{json_schema_content}}]", read_file(os.path.join(folder_path, file)))
+#     num_tokens_system = num_tokens_from_string(system_prompt, "o200k_base")
+#     num_tokens_user = num_tokens_from_string(content_user_prompt, "o200k_base")
+#     total_tokens = num_tokens_system + num_tokens_user
+#     print(f"File: {file}, System Prompt Tokens: {num_tokens_system}, User Prompt Tokens: {num_tokens_user}, Total Tokens: {total_tokens}")
+
+
+
+
+
+
+
 
 #print(num_tokens_from_string("Hello world, let's test tiktoken.", "o200k_base"))
