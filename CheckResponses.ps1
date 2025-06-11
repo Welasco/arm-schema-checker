@@ -20,7 +20,7 @@ function processfolderresponse($path){
     write-output "Finished processing folder: $path"
     write-output "----------------------------------------"
 }
-processfolderresponse "C:\Local-Projects\arm-schema-checker\workingfolder\responsesSLM"
+#processfolderresponse "C:\Local-Projects\arm-schema-checker\workingfolder\responsesSLM"
 processfolderresponse "C:\Local-Projects\arm-schema-checker\workingfolder\responses"
 
 
